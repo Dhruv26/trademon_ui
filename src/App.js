@@ -5,6 +5,7 @@ import Home from './pages/home';
 import AddPage from './pages/addStockEntry';
 import Error from './pages/error';
 import Navigation from './components/Navigation';
+import StockDetails from './pages/stockDetails';
 
 import './App.css';
 
@@ -16,6 +17,7 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={Home} />
                     <Route exact path="/add" component={AddPage} />
+                    <Route path="/details/:id" component={StockDetails} />
 
                     <Route exact path="/error" component={Error} />
                     <Redirect to="/error" />
