@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import IndicatorList from '../components/addStockEntryForm'
+
 
 class AddPage extends Component {
     constructor() {
@@ -40,9 +42,18 @@ class AddPage extends Component {
 
     render() {
         return (
-            <div>
-                <h1>Add Stock Entry</h1>
-                <h3>Please enter the following details.</h3>
+            <div className="container">
+                <div className="row mb-5">
+                    <div className="col-lg-12 text-center">
+                        <h1 className="mt-5">Add Stock Entry</h1>
+                    </div>
+                </div>
+                <h3>Please enter the following details</h3>
+                <IndicatorList
+                    indicatorOptions={this.state.indicators}
+                    indicatorTypeOptions={this.state.indicatorTypeOptions}
+                    timePeriods={this.state.timePeriods}
+                />
             </div>
         );
     }
