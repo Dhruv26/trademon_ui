@@ -25,12 +25,7 @@ const INDICATOR_GROUP_INITIAL_VALUE = {
 const INITIAL_VALUES = {
     stockName: "",
     indicatorGroups: [
-        {
-            groupName: "Hello World",
-            indicators: [
-                INDICATOR_GROUP_INITIAL_VALUE
-            ]
-        }
+        INDICATOR_GROUP_INITIAL_VALUE
     ],
 };
 
@@ -46,10 +41,19 @@ const IndicatorList = (props) => (
     <Formik
         initialValues={INITIAL_VALUES}
         validationSchema={VALIDATION_SCHEMA}
-        onSubmit={values =>
+        onSubmit={values => {
+            console.log(`POSTING Values: ${JSON.stringify(values, null, 4)}`);
+            fetch("http://localhost:5000/add", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            })
             setTimeout(() => {
                 alert(JSON.stringify(values, null, 2));
-            }, 500)}
+            }, 500)}}
     >
         {({ values, touched, errors, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
@@ -62,7 +66,7 @@ const IndicatorList = (props) => (
                         name="indicatorGroups"
                         render={arrayHelpers => {
                             const indicatorGroups = values.indicatorGroups;
-                            console.log(values);
+                            
                             return (
                                 <div>
                                     {indicatorGroups && indicatorGroups.length > 0 ? (
