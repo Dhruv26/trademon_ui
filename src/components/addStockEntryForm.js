@@ -1,12 +1,13 @@
 import React from 'react';
-import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
+import { Formik, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { Button, Form } from 'react-bootstrap';
 
 import "bootstrap/dist/css/bootstrap.css";
 
 const INITIAL_VALUES = {
     stockName: "",
-    indicators: [
+    indicatorGroup: [
         {
             type: "RSI",
             period: "DAILY",
@@ -17,9 +18,9 @@ const INITIAL_VALUES = {
 
 const VALIDATION_SCHEMA = Yup.object().shape({
     stockName: Yup.string().required("Stock name is required."),
-    indicators: Yup.array()
+    indicatorGroup: Yup.array()
         .min(1, "Must have at least 1 Indicator.")
-        .required("Must have indicators"),
+        .required("Must have indicatorGroup"),
 });
 
 const IndicatorList = (props) => (
@@ -31,22 +32,22 @@ const IndicatorList = (props) => (
                 alert(JSON.stringify(values, null, 2));
             }, 500)}
     >
-        {({ values, touched, errors, onSubmit }) => (
-            <Form>
+        {({ values, touched, errors, handleSubmit }) => (
+            <Form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="stockName">Stock Name</label>
                     <Field name="stockName" className={`form-control ${touched.stockName && errors.stockName ? "is-invalid" : ""}`} />
                     <ErrorMessage component="div" name="stockName" className="invalid-feedback" />
                     
                     <FieldArray
-                        name="indicators"
+                        name="indicatorGroup"
                         render={arrayHelper => (
                             <>
-                                {values.indicators ? (
-                                    values.indicators.map((indicator, index) => (
+                                {values.indicatorGroup && values.indicatorGroup.length > 0 ? (
+                                    values.indicatorGroup.map((indicator, index) => (
                                         <div key={index}>
-                                            <label htmlFor={`indicators.${index}.type`} >Indicator Type</label>
-                                            <Field name={`indicators.${index}.type`} as="select" className="form-control" >
+                                            <label htmlFor={`indicatorGroup.${index}.type`} >Indicator Type</label>
+                                            <Field name={`indicatorGroup.${index}.type`} as="select" className="form-control" >
                                                 {
                                                     Object.keys(props.indicatorTypeOptions).map(indicatorType => (
                                                         <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
@@ -54,8 +55,8 @@ const IndicatorList = (props) => (
                                                 }
                                             </Field>
 
-                                            <label htmlFor={`indicators.${index}.period`} >Period</label>
-                                            <Field name={`indicators.${index}.period`} as="select" className="form-control" >
+                                            <label htmlFor={`indicatorGroup.${index}.period`} >Period</label>
+                                            <Field name={`indicatorGroup.${index}.period`} as="select" className="form-control" >
                                                 {
                                                     props.timePeriods.map(timePeriod => (
                                                         <option value={timePeriod}>{timePeriod}</option>
@@ -63,8 +64,8 @@ const IndicatorList = (props) => (
                                                 }
                                             </Field>
 
-                                            <label htmlFor={`indicators.${index}.indic`} >Indicator</label>
-                                            <Field name={`indicators.${index}.indic`} as="select" className="form-control" >
+                                            <label htmlFor={`indicatorGroup.${index}.indic`} >Indicator</label>
+                                            <Field name={`indicatorGroup.${index}.indic`} as="select" className="form-control" >
                                                 {
                                                     props.indicatorOptions.map(indicator => (
                                                         <option value={indicator}>{indicator}</option>
@@ -72,29 +73,23 @@ const IndicatorList = (props) => (
                                                 }
                                             </Field>
 
-                                            <label htmlFor={`indicators.${index}.comment`} >Comment</label>
-                                            <Field name={`indicators.${index}.comment`} className="form-control" />
+                                            <label htmlFor={`indicatorGroup.${index}.comment`} >Comment</label>
+                                            <Field name={`indicatorGroup.${index}.comment`} className="form-control" />
 
                                             <br></br>
-                                            <button type="button" className="btn btn-primary" onClick={() => arrayHelper.push('')}>Add</button>
-                                            {
-                                                values.indicators.length > 1 ?
-                                                    <button type="button" className="btn btn-warning" onClick={() => arrayHelper.remove(index)}>Remove</button> :
-                                                    null
-                                            }
+                                            <Button type="button" variant="secondary" onClick={() => arrayHelper.push('')} >Add Indicator</Button>
+                                            <Button type="button" variant="warning" onClick={() => arrayHelper.remove(index)} disabled={values.indicatorGroup.length <= 1} >Remove Indicator</Button>
                                             <br></br>
                                         </div>
                                     ))
                                 ) :
-                                    null
+                                    <Button type="button" variant="secondary" onClick={() => arrayHelper.push('')} >Add Indicator</Button>
                                 }
-
-                                <br></br>
-                                <button type="submit" className="btn btn-primary btn-block">Submit</button>
-
                             </>
                         )}
                     />
+                    <br></br>
+                    <Button type="submit" variant="primary" block>Submit</Button>
                 </div>
             </Form>
         )}
