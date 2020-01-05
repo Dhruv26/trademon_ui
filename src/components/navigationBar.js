@@ -1,25 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 const NavigationBar = () => {
     return (
-        <Navbar expand="lg">
-            <Navbar.Brand href="/">Trade Monitor</Navbar.Brand>
+        <Navbar bg="light" variant="light" collapseOnSelect>
+            <Navbar.Brand>
+                <Link to="/">Trade Monitor</Link>
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            
+
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="ml-auto">
-                    <Nav.Item>
-                        <Nav.Link>
-                            <Link to="/">Home</Link>
-                        </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link>
-                            <Link to="/add">Add New Entry</Link>
-                        </Nav.Link>
-                    </Nav.Item>
+                <Nav className="justify-content-center">
+                    <NavItem>
+                        <Link to="/" className="nav-link" role="button">Home</Link>
+                    </NavItem>
+                    <NavItem>
+                        <Link to="/add" className="nav-link" role="button">Add New Entry</Link>
+                    </NavItem>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
