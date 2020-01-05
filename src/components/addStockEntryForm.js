@@ -17,7 +17,7 @@ const INDICATORS_INITIAL_VALUE = {
 
 const INDICATOR_GROUP_INITIAL_VALUE = {
     groupName: "",
-    indicators : [
+    indicators: [
         INDICATORS_INITIAL_VALUE
     ]
 };
@@ -53,9 +53,10 @@ const IndicatorList = (props) => (
             })
             setTimeout(() => {
                 alert(JSON.stringify(values, null, 2));
-            }, 500)}}
+            }, 500)
+        }}
     >
-        {({ values, touched, errors, handleSubmit }) => (
+        {({ values, touched, errors, handleSubmit, isSubmitting }) => (
             <Form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="stockName">Stock Name</label>
@@ -66,7 +67,7 @@ const IndicatorList = (props) => (
                         name="indicatorGroups"
                         render={arrayHelpers => {
                             const indicatorGroups = values.indicatorGroups;
-                            
+
                             return (
                                 <div>
                                     {indicatorGroups && indicatorGroups.length > 0 ? (
@@ -92,9 +93,11 @@ const IndicatorList = (props) => (
                                                                                     <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.type`} as="select" className="form-control" >
                                                                                         <option value="">None</option>
                                                                                         {
-                                                                                            Object.keys(props.indicatorTypeOptions).map(indicatorType => (
-                                                                                                <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
-                                                                                            ))
+                                                                                            props.indicatorTypeOptions ? (
+                                                                                                Object.keys(props.indicatorTypeOptions).map(indicatorType => (
+                                                                                                    <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
+                                                                                                ))
+                                                                                            ) : null
                                                                                         }
                                                                                     </Field>
 
@@ -102,9 +105,11 @@ const IndicatorList = (props) => (
                                                                                     <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.period`} as="select" className="form-control" >
                                                                                         <option value="">None</option>
                                                                                         {
-                                                                                            props.timePeriods.map(timePeriod => (
-                                                                                                <option value={timePeriod}>{timePeriod}</option>
-                                                                                            ))
+                                                                                            props.timePeriod ? (
+                                                                                                props.timePeriods.map(timePeriod => (
+                                                                                                    <option value={timePeriod}>{timePeriod}</option>
+                                                                                                ))
+                                                                                            ) : null
                                                                                         }
                                                                                     </Field>
 
@@ -112,9 +117,11 @@ const IndicatorList = (props) => (
                                                                                     <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.indicator`} as="select" className="form-control" >
                                                                                         <option value="">None</option>
                                                                                         {
-                                                                                            props.indicatorOptions.map(indicator => (
-                                                                                                <option value={indicator}>{indicator}</option>
-                                                                                            ))
+                                                                                            props.indicatorOptions ? (
+                                                                                                props.indicatorOptions.map(indicator => (
+                                                                                                    <option value={indicator}>{indicator}</option>
+                                                                                                ))
+                                                                                            ) : null
                                                                                         }
                                                                                     </Field>
 
@@ -126,7 +133,7 @@ const IndicatorList = (props) => (
 
                                                                                     <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} >Date Ref</label>
                                                                                     <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} className="form-control" />
-                                                                                    
+
                                                                                     <Button type="button" variant="outline-secondary" onClick={() => arrayHelpers2.push('')}>
                                                                                         Add Indicator
                                                                                     </Button>
@@ -164,7 +171,7 @@ const IndicatorList = (props) => (
                             );
                         }}
                     />
-                    <Button type="submit" variant="success" block>Submit</Button>
+                    <Button type="submit" variant="success" disabled={isSubmitting} block>Submit</Button>
                 </div>
             </Form>
         )}

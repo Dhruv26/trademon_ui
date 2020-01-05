@@ -18,20 +18,20 @@ class AddPage extends Component {
         this.setState({
             indicators: metadata.indicators,
             indicatorTypeOptions: metadata.indicatorTypes,
-            timePeriods: metadata.time_periods,
+            timePeriods: metadata.timePeriods,
         });
     }
 
     async getParameterTypeOptions() {
         try {
-            const response = await fetch('http://localhost:5000/getStockEntryMetaData');
+            const response = await fetch('http://localhost:5000/get_entry_meta_data');
             if (!response.ok) {
                 throw Error(response.statusText);
             }
 
             const data = await response.json();
             console.log(data);
-            return data;
+            return data.Data;
         }
         catch (error) {
             console.log('Unexpected error occured while fetching: ' + error);
