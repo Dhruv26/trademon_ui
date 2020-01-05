@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
-import Home from './pages/home';
+import HomePage from './pages/home';
 import AddPage from './pages/addStockEntry';
 import Error from './pages/error';
 import NavigationBar from './components/navigationBar';
@@ -17,7 +17,7 @@ function App() {
                 <NavigationBar />
                 <Container>
                     <Switch>
-                        <Route exact path="/" component={Home} />
+                        <Route exact path="/" component={HomePage} />
                         <Route exact path="/add" component={AddPage} />
                         <Route path="/details/:id" component={StockDetails} />
 
