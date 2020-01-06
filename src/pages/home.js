@@ -1,40 +1,22 @@
 import React, { Component } from 'react';
 import IndexTable from '../components/indexPageTable';
 import { Button } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
 
 
 const ID_KEY = '_id';
 
 
 class HomePage extends Component {
-    constructor() {
-        super();
-        this.state = {
-            columns: [],
-            data: []
-        };
-    }
-
-    async handleDelete(rowData) {
-        const entryID = rowData[ID_KEY];
-        const deleteRequest = await fetch(`http://localhost:5000/delete/${entryID}`,
-            {
-                method: 'DELETE'
-            });
-        if (deleteRequest.ok) {
-            alert(`Successfully deleted ${rowData}`);
-            console.log(this.props.history);
-            //this.props.history.push('/');
-            return <Redirect to='/' />;
-        }
-
-        alert(`Unable to delete ${rowData}. Please try again!`);
-        return;
+    state = {
+        columns: [],
+        data: []
     };
 
     async handleMoreInfo(rowData) {
         console.log(rowData);
+        const currID = rowData[ID_KEY];
+        let history = this.props.history;
+        history.push(`/details/${currID}`);
     };
 
     async componentDidMount() {
@@ -61,24 +43,11 @@ class HomePage extends Component {
                     Header: 'More Info',
                     Cell: cellInfo => (
                         <div>
-                            <Button onClick={() => {
+                            <Button size="sm" onClick={() => {
                                 const index = cellInfo.row.index;
                                 this.handleMoreInfo(cellInfo.data[index]);
                             }}>
                                 More Info
-                            </Button>
-                        </div>
-                    )
-                },
-                {
-                    Header: 'Delete',
-                    Cell: cellInfo => (
-                        <div>
-                            <Button variant="danger" onClick={() => {
-                                const index = cellInfo.row.index;
-                                this.handleDelete(cellInfo.data[index]);
-                            }}>
-                                Delete
                             </Button>
                         </div>
                     )
@@ -114,7 +83,7 @@ class HomePage extends Component {
     render() {
         return (
             <div>
-                <h1>Home</h1>
+                <br></br>
                 <IndexTable
                     columnData={this.state.columns}
                     tableData={this.state.data}
