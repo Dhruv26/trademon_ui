@@ -1,5 +1,5 @@
 import React from 'react';
-import { Formik, Field, FieldArray, ErrorMessage } from 'formik';
+import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Button, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
@@ -60,12 +60,14 @@ const IndicatorList = (props) => {
                 history.push("/");
             }}
         >
-            {({ values, touched, errors, handleSubmit, isSubmitting }) => (
+            {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isSubmitting }) => (
                 <Form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="stockName">Stock Name</label>
-                        <Field name="stockName" className={`form-control ${touched.stockName && errors.stockName ? "is-invalid" : ""}`} />
-                        <ErrorMessage component="div" name="stockName" className="invalid-feedback" />
+                        <Form.Group controlId="stockName">
+                            <Form.Label>Stock Name</Form.Label>
+                            <Form.Control name="stockName" type="text" value={values.stockName} onChange={handleChange} onBlur={handleBlur} isInvalid={touched.stockName && errors.stockName} />
+                            <Form.Control.Feedback type="invalid">{errors.stockName}</Form.Control.Feedback>
+                        </Form.Group>
 
                         <FieldArray
                             name="indicatorGroups"
@@ -78,8 +80,10 @@ const IndicatorList = (props) => {
                                             indicatorGroups.map((group, index) => (
                                                 <div key={index}>
                                                     <h5>{`Indicator Group: ${index + 1}`}</h5>
-                                                    <label htmlFor={`indicatorGroups.${index}.groupName`}>Group Name</label>
-                                                    <Field name={`indicatorGroups.${index}.groupName`} className="form-control" />
+                                                    <Form.Group controlId={`indicatorGroups.${index}.groupName`}>
+                                                        <Form.Label>Group Name</Form.Label>
+                                                        <Form.Control name={`indicatorGroups.${index}.groupName`} type="text" value={indicatorGroups[index].groupName} onChange={handleChange} onBlur={handleBlur} />
+                                                    </Form.Group>
 
                                                     <FieldArray
                                                         id={`indicatorGroups.${index}.indicators`}
@@ -88,55 +92,67 @@ const IndicatorList = (props) => {
                                                             return (
                                                                 <div>
                                                                     {indicatorGroups[index].indicators && indicatorGroups[index].indicators.length > 0 ? (
-                                                                        <div style={{ marginLeft: 10, marginTop: 10 }}>
+                                                                        <div>
                                                                             {indicatorGroups[index].indicators.map((q, indicatorIndex) => {
                                                                                 return (
                                                                                     <div>
                                                                                         <h6 htmlFor={`indicatorGroups.${index}.indicators`}>{`Indicator ${indicatorIndex + 1}`}</h6>
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.type`} >Indicator Type</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.type`} as="select" className="form-control" >
-                                                                                            <option value="">None</option>
-                                                                                            {
-                                                                                                props.indicatorTypeOptions ? (
-                                                                                                    Object.keys(props.indicatorTypeOptions).map(indicatorType => (
-                                                                                                        <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
-                                                                                                    ))
-                                                                                                ) : null
-                                                                                            }
-                                                                                        </Field>
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.type`}>
+                                                                                            <Form.Label>Indicator Type</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.type`} as="select" value={indicatorGroups[index].indicators[indicatorIndex].type} onChange={handleChange} onBlur={handleBlur} >
+                                                                                                <option value="">None</option>
+                                                                                                {
+                                                                                                    props.indicatorTypeOptions ? (
+                                                                                                        Object.keys(props.indicatorTypeOptions).map(indicatorType => (
+                                                                                                            <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
+                                                                                                        ))
+                                                                                                    ) : null
+                                                                                                }
+                                                                                            </Form.Control>
+                                                                                        </Form.Group>
 
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.period`} >Period</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.period`} as="select" className="form-control" >
-                                                                                            <option value="">None</option>
-                                                                                            {
-                                                                                                props.timePeriods ? (
-                                                                                                    props.timePeriods.map(timePeriod => (
-                                                                                                        <option value={timePeriod}>{timePeriod}</option>
-                                                                                                    ))
-                                                                                                ) : null
-                                                                                            }
-                                                                                        </Field>
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.period`}>
+                                                                                            <Form.Label>Period</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.period`} as="select" value={indicatorGroups[index].indicators[indicatorIndex].period} onChange={handleChange} onBlur={handleBlur} >
+                                                                                                <option value="">None</option>
+                                                                                                {
+                                                                                                    props.timePeriods ? (
+                                                                                                        props.timePeriods.map(timePeriod => (
+                                                                                                            <option value={timePeriod}>{timePeriod}</option>
+                                                                                                        ))
+                                                                                                    ) : null
+                                                                                                }
+                                                                                            </Form.Control>
+                                                                                        </Form.Group>
 
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.indicator`} >Indicator</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.indicator`} as="select" className="form-control" >
-                                                                                            <option value="">None</option>
-                                                                                            {
-                                                                                                props.indicatorOptions ? (
-                                                                                                    props.indicatorOptions.map(indicator => (
-                                                                                                        <option value={indicator}>{indicator}</option>
-                                                                                                    ))
-                                                                                                ) : null
-                                                                                            }
-                                                                                        </Field>
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.indicator`}>
+                                                                                            <Form.Label>Indicator</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.indicator`} as="select" value={indicatorGroups[index].indicators[indicatorIndex].indicator} onChange={handleChange} onBlur={handleBlur} >
+                                                                                                <option value="">None</option>
+                                                                                                {
+                                                                                                    props.indicatorOptions ? (
+                                                                                                        props.indicatorOptions.map(indicator => (
+                                                                                                            <option value={indicator}>{indicator}</option>
+                                                                                                        ))
+                                                                                                    ) : null
+                                                                                                }
+                                                                                            </Form.Control>
+                                                                                        </Form.Group>
 
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`} >Value</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`} className="form-control" />
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`}>
+                                                                                            <Form.Label>Value</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`} type="text" value={indicatorGroups[index].indicators[indicatorIndex].value} onChange={handleChange} onBlur={handleBlur} />
+                                                                                        </Form.Group>
 
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`} >Comment</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`} className="form-control" />
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`}>
+                                                                                            <Form.Label>Comment</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`} as="textarea" value={indicatorGroups[index].indicators[indicatorIndex].comment} onChange={handleChange} onBlur={handleBlur} />
+                                                                                        </Form.Group>
 
-                                                                                        <label htmlFor={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} >Date Ref</label>
-                                                                                        <Field name={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} className="form-control" />
+                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`}>
+                                                                                            <Form.Label>Date Ref</Form.Label>
+                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} type="text" value={indicatorGroups[index].indicators[indicatorIndex].dateRef} onChange={handleChange} onBlur={handleBlur} />
+                                                                                        </Form.Group>
 
                                                                                         <Button type="button" variant="outline-secondary" onClick={() => arrayHelpers2.push('')}>
                                                                                             Add Indicator
@@ -176,6 +192,7 @@ const IndicatorList = (props) => {
                             }}
                         />
                         <Button type="submit" variant="success" disabled={isSubmitting} block>Submit</Button>
+                        <h4>{JSON.stringify(errors)}</h4>
                     </div>
                 </Form>
             )}
