@@ -2,28 +2,33 @@ import React, { useState, useEffect } from 'react';
 
 
 function StockDetails({ match }) {
-    const [stockDetails, setStockDetails] = useState({});
+    const [stockDetails, setStockDetails] = useState({
+        data: []
+    });
 
     useEffect(() => {
-        console.log(match)
-        fetchStockDetails();
-    }, []);
+        const entryId = match.params.id;
+        console.log(`Entry ID: ${entryId}`);
+        async function get() {
+            const data = await fetchStockDetails(entryId);
+            setStockDetails(data.Data);
+        }
 
-    const fetchStockDetails = async () => {
+        get();
+    }, [match.params.id]);
+
+    const fetchStockDetails = async (id) => {
+        console.log('Fetching stock data.');
         try {
-            const stockDataRequest = await fetch(``);
-            console.log(JSON.stringify(stockDataRequest));
+            const stockDataRequest = await fetch(`http://localhost:5000/get_stock_info/${id}`);
             if (!stockDataRequest.ok) {
                 throw Error(stockDataRequest.statusText);
             }
                 
             const stockData = await stockDataRequest.json();
-            setStockDetails(stockData);
             return stockData;
         } catch (error) {
             console.log(`Error occured while fetching stock data: ${error}`);
-            
-            setStockDetails(null);
             return null;
         }
     }
