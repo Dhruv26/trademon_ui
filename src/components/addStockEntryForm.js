@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { Alert, Button, Form, Row, Col } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Button, Form, Row, Col } from 'react-bootstrap';
 
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -38,58 +37,14 @@ const VALIDATION_SCHEMA = Yup.object().shape({
         .required("Must have indicator Groups"),
 });
 
-const postFormData = async (formData) => {
-    try {
-        const postRequest = await fetch("http://localhost:5000/add", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-        if (!postRequest.ok) {
-            throw Error(postRequest.statusText);
-        }
-
-        const postMessage = await postRequest.json();
-        return {
-            success: true,
-            message: postMessage
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: error.message
-        };
-    }
-}
 
 
 const AddStockEntryForm = (props) => {
-    let history = useHistory();
-    const [failedToCreateRecord, setFailedToCreateRecord] = useState(false);
-    const [failureMessage, setFailureMessage] = useState("");
-
     return (
         <Formik
             initialValues={INITIAL_VALUES}
             validationSchema={VALIDATION_SCHEMA}
-            onSubmit={async (values, actions) => {
-                console.log(`POSTING Values: ${JSON.stringify(values, null, 4)}`);
-                const requestResult = await postFormData(values);
-
-                if (requestResult.success) {
-                    history.push("/", {
-                        entryCreated: true
-                    });
-                    return;
-                }
-                // Handle failure
-                actions.setSubmitting(false);
-                setFailedToCreateRecord(true);
-                setFailureMessage(requestResult.message);
-            }}
+            onSubmit={props.onSubmit}
         >
             {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isSubmitting }) => (
                 <Form onSubmit={handleSubmit}>
@@ -198,16 +153,22 @@ const AddStockEntryForm = (props) => {
                                                                                             </Col>
                                                                                         </Row>
 
-                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`}>
-                                                                                            <Form.Label>Comment</Form.Label>
-                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`} as="textarea" value={indicatorGroups[index].indicators[indicatorIndex].comment} onChange={handleChange} onBlur={handleBlur} />
-                                                                                        </Form.Group>
+                                                                                        <Row>
+                                                                                            <Col>
+                                                                                                <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`}>
+                                                                                                    <Form.Label>Comment</Form.Label>
+                                                                                                    <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.comment`} as="textarea" value={indicatorGroups[index].indicators[indicatorIndex].comment} onChange={handleChange} onBlur={handleBlur} />
+                                                                                                </Form.Group>
+                                                                                            </Col>
 
-                                                                                        <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`}>
-                                                                                            <Form.Label>Date Ref</Form.Label>
-                                                                                            <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} type="text" value={indicatorGroups[index].indicators[indicatorIndex].dateRef} onChange={handleChange} onBlur={handleBlur} />
-                                                                                            <Form.Text className="text-muted">Dates should be of format: 'dd/mm/yyyy'. Time periods should be dates seperated by '-'.</Form.Text>
-                                                                                        </Form.Group>
+                                                                                            <Col>
+                                                                                                <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`}>
+                                                                                                    <Form.Label>Date Ref</Form.Label>
+                                                                                                    <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.dateRef`} as="textarea" value={indicatorGroups[index].indicators[indicatorIndex].dateRef} onChange={handleChange} onBlur={handleBlur} />
+                                                                                                    <Form.Text className="text-muted">Dates should be of format: 'dd/mm/yyyy'. Time periods should be dates seperated by '-'.</Form.Text>
+                                                                                                </Form.Group>
+                                                                                            </Col>
+                                                                                        </Row>
 
                                                                                         <Row>
                                                                                             <Col>
@@ -257,12 +218,6 @@ const AddStockEntryForm = (props) => {
                                 );
                             }}
                         />
-                        
-                        <Alert show={failedToCreateRecord} variant="danger" onClose={() => setFailedToCreateRecord(false)} dismissible>
-                            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-                            <p>{failureMessage}</p>
-                        </Alert>
-
                         <Button type="submit" variant="success" disabled={isSubmitting} block>{isSubmitting ? "Saving..." : "Submit"}</Button>
                     </div>
                 </Form>
