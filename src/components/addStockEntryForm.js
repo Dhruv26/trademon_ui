@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { Button, Form, Row, Col } from 'react-bootstrap';
+import { Alert, Button, Form, Row, Col } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -68,19 +68,27 @@ const postFormData = async (formData) => {
 
 const AddStockEntryForm = (props) => {
     let history = useHistory();
+    const [failedToCreateRecord, setFailedToCreateRecord] = useState(false);
+    const [failureMessage, setFailureMessage] = useState("");
+
     return (
         <Formik
             initialValues={INITIAL_VALUES}
             validationSchema={VALIDATION_SCHEMA}
-            onSubmit={async (values) => {
+            onSubmit={async (values, actions) => {
                 console.log(`POSTING Values: ${JSON.stringify(values, null, 4)}`);
                 const requestResult = await postFormData(values);
 
-                setTimeout(() => {
-                    alert(JSON.stringify(requestResult));
-                }, 500);
-
-                history.push("/");
+                if (requestResult.success) {
+                    history.push("/", {
+                        entryCreated: true
+                    });
+                    return;
+                }
+                // Handle failure
+                actions.setSubmitting(false);
+                setFailedToCreateRecord(true);
+                setFailureMessage(requestResult.message);
             }}
         >
             {({ values, touched, errors, handleSubmit, handleBlur, handleChange, isSubmitting }) => (
@@ -179,8 +187,8 @@ const AddStockEntryForm = (props) => {
                                                                                                         <Form.Text className="text-muted">Name of other indicator.</Form.Text>
                                                                                                     </Form.Group>
                                                                                                 </Col>
-                                                                                            ) : ( null
-                                                                                            )}
+                                                                                            ) : (null
+                                                                                                )}
 
                                                                                             <Col>
                                                                                                 <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`}>
@@ -249,6 +257,12 @@ const AddStockEntryForm = (props) => {
                                 );
                             }}
                         />
+                        
+                        <Alert show={failedToCreateRecord} variant="danger" onClose={() => setFailedToCreateRecord(false)} dismissible>
+                            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+                            <p>{failureMessage}</p>
+                        </Alert>
+
                         <Button type="submit" variant="success" disabled={isSubmitting} block>{isSubmitting ? "Saving..." : "Submit"}</Button>
                     </div>
                 </Form>
