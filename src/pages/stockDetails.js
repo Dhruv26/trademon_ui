@@ -3,8 +3,6 @@ import { useHistory } from 'react-router-dom';
 import StockDetailsTable from '../components/stockDetailsTable';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 
-const ID_KEY = "_id";
-
 
 const createColumnsArray = (groupData) => {
     const columns = [
@@ -102,8 +100,7 @@ const StockDetails = ({ match }) => {
 
     return (
         <div>
-
-            <Modal show={showDeleteModal}>
+            <Modal show={showDeleteModal} aria-labelledby="contained-modal-title-vcenter"centered >
                 <Modal.Header>
                     <Modal.Title>DELETE</Modal.Title>
                 </Modal.Header>

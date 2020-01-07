@@ -72,14 +72,14 @@ const AddStockEntryForm = (props) => {
         <Formik
             initialValues={INITIAL_VALUES}
             validationSchema={VALIDATION_SCHEMA}
-            onSubmit={ async (values) => {
+            onSubmit={async (values) => {
                 console.log(`POSTING Values: ${JSON.stringify(values, null, 4)}`);
                 const requestResult = await postFormData(values);
-                
+
                 setTimeout(() => {
                     alert(JSON.stringify(requestResult));
                 }, 500);
-                
+
                 history.push("/");
             }}
         >
@@ -171,6 +171,17 @@ const AddStockEntryForm = (props) => {
                                                                                                 </Form.Group>
                                                                                             </Col>
 
+                                                                                            {indicatorGroups[index].indicators[indicatorIndex].indicator === "OTHER" ? (
+                                                                                                <Col>
+                                                                                                    <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.otherIndicator`}>
+                                                                                                        <Form.Label>Other Indicator</Form.Label>
+                                                                                                        <Form.Control name={`indicatorGroups.${index}.indicators.${indicatorIndex}.otherIndicator`} type="text" value={indicatorGroups[index].indicators[indicatorIndex].otherIndicator} onChange={handleChange} onBlur={handleBlur} />
+                                                                                                        <Form.Text className="text-muted">Name of other indicator.</Form.Text>
+                                                                                                    </Form.Group>
+                                                                                                </Col>
+                                                                                            ) : ( null
+                                                                                            )}
+
                                                                                             <Col>
                                                                                                 <Form.Group controlId={`indicatorGroups.${index}.indicators.${indicatorIndex}.value`}>
                                                                                                     <Form.Label>Value</Form.Label>
@@ -238,7 +249,7 @@ const AddStockEntryForm = (props) => {
                                 );
                             }}
                         />
-                        <Button type="submit" variant="success" disabled={isSubmitting} block>Submit</Button>
+                        <Button type="submit" variant="success" disabled={isSubmitting} block>{isSubmitting ? "Saving..." : "Submit"}</Button>
                     </div>
                 </Form>
             )}
