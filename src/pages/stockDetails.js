@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StockDetailsTable from '../components/stockDetailsTable';
+import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
+
+const ID_KEY = "_id";
 
 
-const createColumnsArray = (groupData, history) => {
-    console.log(`Creating columns array from ${JSON.stringify(groupData)}`);
+const createColumnsArray = (groupData) => {
     const columns = [
         {
             Header: 'Indicator Type',
@@ -48,6 +50,8 @@ const createColumnsArray = (groupData, history) => {
 const StockDetails = ({ match }) => {
     let history = useHistory();
     const [stockDetails, setStockDetails] = useState({});
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [modalDeleteClicked, setModalDeleteClicked] = useState(false);
 
     useEffect(() => {
         const entryId = match.params.id;
@@ -76,16 +80,63 @@ const StockDetails = ({ match }) => {
         }
     };
 
+    const editButtonClicked = () => {
+        console.log('Edit button clicked');
+    };
+
+    const handleDelete = async () => {
+        setModalDeleteClicked(true);
+        console.log('Modal delete clicked.');
+
+        const id = match.params.id;
+        try {
+            const deleteRequest = await fetch(`http://localhost:5000/delete/${id}`);
+            if (!deleteRequest.ok) {
+                throw Error(deleteRequest.statusText);
+            }
+            history.push('/');
+        } catch (error) {
+            setModalDeleteClicked(false);
+        }
+    };
+
     return (
         <div>
+
+            <Modal show={showDeleteModal}>
+                <Modal.Header>
+                    <Modal.Title>DELETE</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{`Are you sure you want to delete {${stockDetails.stockName}}`}</Modal.Body>
+                <Modal.Footer>
+                    <ButtonToolbar>
+                        <Button variant="danger" disabled={modalDeleteClicked} onClick={handleDelete}>
+                            {modalDeleteClicked ? "Deleting..." : "Yes"}
+                        </Button>
+                        <Button variant="warning" onClick={() => setShowDeleteModal(false)}>Close</Button>
+                    </ButtonToolbar>
+                </Modal.Footer>
+            </Modal>
+
             <h1>{`Details for ${stockDetails.stockName}`}</h1>
+            <div className="mt-2 mb-2">
+                <ButtonToolbar>
+                    <Button variant="info" onClick={editButtonClicked}>Edit</Button>
+                    <Button variant="danger" onClick={() => {
+                        setShowDeleteModal(true)
+                        console.log(`Delete button clicked.`);
+                    }}>
+                        Delete
+                    </Button>
+                </ButtonToolbar>
+            </div>
             {
                 stockDetails && stockDetails.indicatorGroups ? (
                     <>
-                        {stockDetails.indicatorGroups.map(groupData => {
-                            const columns = createColumnsArray(groupData, history);
+                        {stockDetails.indicatorGroups.map((groupData, index) => {
+                            const columns = createColumnsArray(groupData);
                             return (
-                                <StockDetailsTable columnData={columns} tableData={groupData.indicators} />
+                                <StockDetailsTable key={index} columnData={columns} tableData={groupData.indicators} />
                             );
                         })}
                     </>
