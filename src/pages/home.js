@@ -2,25 +2,10 @@ import React, { useState, useEffect } from 'react';
 import IndexTable from '../components/indexPageTable';
 import { Button, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import APIService from '../services/APIService';
 
 
 const ID_KEY = '_id';
-
-const getTableData = async () => {
-    try {
-        const tableDataResponse = await fetch('http://localhost:5000/get_table');
-        if (!tableDataResponse.ok) {
-            throw Error(tableDataResponse.statusText);
-        }
-
-        const tableData = await tableDataResponse.json();
-        return tableData;
-    } catch (error) {
-        return {
-            Data: [],
-        };
-    }
-}
 
 
 const HomePage = (props) => {
@@ -32,7 +17,6 @@ const HomePage = (props) => {
     let history = useHistory();
 
     const handleMoreInfo = async (rowData) => {
-        console.log(rowData);
         const currID = rowData[ID_KEY];
         history.push(`/details/${currID}`);
     };
@@ -74,7 +58,7 @@ const HomePage = (props) => {
                 ]
             }];
     
-            const tableData = await getTableData();
+            const tableData = await apiService.getHomeTableData();
             const data = tableData.Data;
     
             setTableData({
@@ -88,6 +72,8 @@ const HomePage = (props) => {
             setCreationSuccess(props.location.state.entryCreated);
         }
     }, [props]);
+
+    const apiService = new APIService();
 
     return (
         <div>

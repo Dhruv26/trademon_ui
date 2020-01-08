@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StockDetailsTable from '../components/stockDetailsTable';
 import { Alert, Button, ButtonToolbar, Modal } from 'react-bootstrap';
+import APIService from '../services/APIService';
 
 
 const createColumnsArray = (groupData) => {
@@ -54,10 +55,9 @@ const StockDetails = ({ location, match }) => {
 
     useEffect(() => {
         const entryId = match.params.id;
-        console.log(`Entry ID: ${entryId}`);
         async function get() {
-            const data = await fetchStockDetails(entryId);
-            setStockDetails(data.Data);
+            const data = await apiService.getStockDetails(entryId);
+            setStockDetails(data);
         }
 
         get();
@@ -66,21 +66,7 @@ const StockDetails = ({ location, match }) => {
         }
     }, [match, location]);
 
-    const fetchStockDetails = async (id) => {
-        console.log('Fetching stock data.');
-        try {
-            const stockDataRequest = await fetch(`http://localhost:5000/get_stock_info/${id}`);
-            if (!stockDataRequest.ok) {
-                throw Error(stockDataRequest.statusText);
-            }
-
-            const stockData = await stockDataRequest.json();
-            return stockData;
-        } catch (error) {
-            console.log(`Error occured while fetching stock data: ${error}`);
-            return null;
-        }
-    };
+    const apiService = new APIService();
 
     const editButtonClicked = () => {
         console.log('Edit button clicked');
@@ -91,11 +77,10 @@ const StockDetails = ({ location, match }) => {
 
     const handleDelete = async () => {
         setModalDeleteClicked(true);
-        console.log('Modal delete clicked.');
 
         const id = match.params.id;
         try {
-            const deleteRequest = await fetch(`http://localhost:5000/delete/${id}`);
+            const deleteRequest = await apiService.deleteStockEntry(id);
             if (!deleteRequest.ok) {
                 throw Error(deleteRequest.statusText);
             }
@@ -149,9 +134,7 @@ const StockDetails = ({ location, match }) => {
                     </>
                 ) : (
                         <>
-                            <h4>Connot find group data.</h4>
-                            <p>{JSON.stringify(stockDetails)}</p>
-                            <h5>{`Condition: ${stockDetails && stockDetails.indicatorGroups}`}</h5>
+                            <h4>Error occured! Cannot find group data.</h4>
                         </>
                     )
             }

@@ -2,52 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AddStockEntryForm from '../components/addStockEntryForm';
 import { useHistory } from 'react-router-dom';
 import { Alert, Button } from 'react-bootstrap';
-
-const postFormData = async (formData) => {
-    try {
-        const postRequest = await fetch("http://localhost:5000/update", {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
-        if (!postRequest.ok) {
-            throw Error(postRequest.statusText);
-        }
-
-        const postMessage = await postRequest.json();
-        return {
-            success: true,
-            message: postMessage
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: error.message
-        };
-    }
-}
-
-
-const getParameterTypeOptions = async () => {
-    try {
-        const response = await fetch('http://localhost:5000/get_entry_meta_data');
-        if (!response.ok) {
-            throw Error(response.statusText);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        return data.Data;
-    }
-    catch (error) {
-        console.log('Unexpected error occured while fetching: ' + error);
-        const FALLBACK_INDICATOR_OPTIONS = ["Add some types"];
-        return FALLBACK_INDICATOR_OPTIONS;
-    }
-}
+import APIService from '../services/APIService';
 
 
 const EditStockEntryPage = (props) => {
@@ -62,7 +17,7 @@ const EditStockEntryPage = (props) => {
 
     useEffect(() => {
         async function setOptions() {
-            const metadata = await getParameterTypeOptions();
+            const metadata = await apiService.getParameterTypeOptions();
             setFormOptions({
                 indicators: metadata.indicators,
                 indicatorTypeOptions: metadata.indicatorTypes,
@@ -72,10 +27,11 @@ const EditStockEntryPage = (props) => {
         setOptions();
     }, []);
 
+    const apiService = new APIService()
+
     const onSubmit = async (values, actions) => {
-        console.log(`POSTING Values: ${JSON.stringify(values, null, 2)}`);
         const id = values['_id'];
-        const requestResult = await postFormData(values);
+        const requestResult = await apiService.updateStockEntry(values);
 
         if (requestResult.success) {
             history.push(`/details/${id}`, {
@@ -89,7 +45,6 @@ const EditStockEntryPage = (props) => {
         setFailureMessage(requestResult.message);
     }
 
-    console.log(props);
     const currentValues = props.location.state.stockDetails;
 
     return (
