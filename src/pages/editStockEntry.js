@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import AddStockEntryForm from '../components/addStockEntryForm'
+import React, { useEffect, useState } from 'react';
+import AddStockEntryForm from '../components/addStockEntryForm';
 import { useHistory } from 'react-router-dom';
-import { Alert } from 'react-bootstrap';
-
+import { Alert, Button } from 'react-bootstrap';
 
 const postFormData = async (formData) => {
     try {
-        const postRequest = await fetch("http://localhost:5000/add", {
+        const postRequest = await fetch("http://localhost:5000/update", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -31,6 +30,7 @@ const postFormData = async (formData) => {
     }
 }
 
+
 const getParameterTypeOptions = async () => {
     try {
         const response = await fetch('http://localhost:5000/get_entry_meta_data');
@@ -50,7 +50,7 @@ const getParameterTypeOptions = async () => {
 }
 
 
-const AddPage = () => {
+const EditStockEntryPage = (props) => {
     let history = useHistory();
     const [formOptions, setFormOptions] = useState({
         indicators: [],
@@ -73,12 +73,13 @@ const AddPage = () => {
     }, []);
 
     const onSubmit = async (values, actions) => {
-        console.log(`POSTING Values: ${JSON.stringify(values, null, 4)}`);
+        console.log(`POSTING Values: ${JSON.stringify(values, null, 2)}`);
+        const id = values['_id'];
         const requestResult = await postFormData(values);
 
         if (requestResult.success) {
-            history.push("/", {
-                entryCreated: true
+            history.push(`/details/${id}`, {
+                entryUpdated: true
             });
             return;
         }
@@ -88,26 +89,33 @@ const AddPage = () => {
         setFailureMessage(requestResult.message);
     }
 
+    console.log(props);
+    const currentValues = props.location.state.stockDetails;
+
     return (
-        <div className="container">
-            <div className="row mb-2">
-                <div className="col-lg-12 text-center">
-                    <h1 className="mt-2">Add Stock Entry</h1>
-                </div>
-            </div>
-            <h3>Please enter the following details</h3>
+        <>
+            <h2>Edit Stock Entry</h2>
             <AddStockEntryForm
+                initialValues={currentValues}
                 indicatorOptions={formOptions.indicators}
                 indicatorTypeOptions={formOptions.indicatorTypeOptions}
                 timePeriods={formOptions.timePeriods}
                 onSubmit={onSubmit}
             />
+            <Button variant="warning" block className="mb-4"
+                onClick={() => {
+                    const id = currentValues['_id'];
+                    history.push(`/details/${id}`);
+                }}
+            >
+                Cancel
+            </Button>
             <Alert show={failedToCreateRecord} variant="danger" onClose={() => setFailedToCreateRecord(false)} dismissible>
                 <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
                 <p>{failureMessage}</p>
             </Alert>
-        </div>
+        </>
     );
-}
+};
 
-export default AddPage;
+export default EditStockEntryPage;
