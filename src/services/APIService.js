@@ -1,6 +1,6 @@
 class APIService {
     constructor() {
-        this.url = "http://localhost:5000";
+        this.url = "http://127.0.0.1:5000";
     }
 
     async getParameterTypeOptions() {

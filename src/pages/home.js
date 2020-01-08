@@ -43,6 +43,10 @@ const HomePage = (props) => {
                         accessor: 'RSI'
                     },
                     {
+                        Header: 'Price',
+                        accessor: 'Price'
+                    },
+                    {
                         Header: 'More Info',
                         Cell: cellInfo => (
                             <div>
