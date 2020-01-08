@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StockDetailsTable from '../components/stockDetailsTable';
-import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
+import { Alert, Button, ButtonToolbar, Modal } from 'react-bootstrap';
 
 
 const createColumnsArray = (groupData) => {
@@ -45,11 +45,12 @@ const createColumnsArray = (groupData) => {
 };
 
 
-const StockDetails = ({ match }) => {
+const StockDetails = ({ location, match }) => {
     let history = useHistory();
     const [stockDetails, setStockDetails] = useState({});
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [modalDeleteClicked, setModalDeleteClicked] = useState(false);
+    const [showUpdateMessage, setShowUpdateMessage] = useState(false);
 
     useEffect(() => {
         const entryId = match.params.id;
@@ -60,7 +61,10 @@ const StockDetails = ({ match }) => {
         }
 
         get();
-    }, [match.params.id]);
+        if (location.state && location.state.entryUpdated) {
+            setShowUpdateMessage(location.state.entryUpdated);
+        }
+    }, [match, location]);
 
     const fetchStockDetails = async (id) => {
         console.log('Fetching stock data.');
@@ -80,6 +84,9 @@ const StockDetails = ({ match }) => {
 
     const editButtonClicked = () => {
         console.log('Edit button clicked');
+        history.push('/edit', {
+            stockDetails: stockDetails
+        });
     };
 
     const handleDelete = async () => {
@@ -116,6 +123,9 @@ const StockDetails = ({ match }) => {
             </Modal>
 
             <h1>{`Details for ${stockDetails.stockName}`}</h1>
+            <Alert show={showUpdateMessage} onClose={() => setShowUpdateMessage(false)} variant="success" className="mt-2 mb-2" dismissible>
+                <p>Entry updated successfully!</p>
+            </Alert>
             <div className="mt-2 mb-2">
                 <ButtonToolbar>
                     <Button variant="info" onClick={editButtonClicked}>Edit</Button>

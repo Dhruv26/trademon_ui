@@ -7,6 +7,7 @@ import AddPage from './pages/addStockEntry';
 import Error from './pages/error';
 import NavigationBar from './components/navigationBar';
 import StockDetails from './pages/stockDetails';
+import EditStockEntryPage from './pages/editStockEntry';
 
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
                         <Route exact path="/" component={HomePage} />
                         <Route exact path="/add" component={AddPage} />
                         <Route path="/details/:id" component={StockDetails} />
+                        <Route exact path="/edit" component={EditStockEntryPage} />
 
                         <Route exact path="/error" component={Error} />
                         <Redirect to="/error" />

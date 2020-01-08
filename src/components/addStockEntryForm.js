@@ -40,9 +40,10 @@ const VALIDATION_SCHEMA = Yup.object().shape({
 
 
 const AddStockEntryForm = (props) => {
+    const initialValues = props.initialValues ? props.initialValues : INITIAL_VALUES;
     return (
         <Formik
-            initialValues={INITIAL_VALUES}
+            initialValues={initialValues}
             validationSchema={VALIDATION_SCHEMA}
             onSubmit={props.onSubmit}
         >
