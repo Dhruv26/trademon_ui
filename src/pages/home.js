@@ -44,7 +44,11 @@ const HomePage = (props) => {
                     },
                     {
                         Header: 'Price',
-                        accessor: 'Price'
+                        accessor: 'PRICE'
+                    },
+                    {
+                        Header: 'Live Price',
+                        accessor: 'LivePrice'
                     },
                     {
                         Header: 'More Info',
