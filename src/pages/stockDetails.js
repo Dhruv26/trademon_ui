@@ -128,7 +128,14 @@ const StockDetails = ({ location, match }) => {
                         {stockDetails.indicatorGroups.map((groupData, index) => {
                             const columns = createColumnsArray(groupData);
                             return (
-                                <StockDetailsTable key={index} columnData={columns} tableData={groupData.indicators} />
+                                <div key={index}>
+                                    <p>
+                                        Target: {groupData.target ? groupData.target : "Target not set."}
+                                        <span style={{display:"inline-block", width: 32}}></span>
+                                        Stop loss: {groupData.stopLoss ? groupData.stopLoss : "Stop loss not set."}
+                                    </p>
+                                    <StockDetailsTable key={index} columnData={columns} tableData={groupData.indicators} />
+                                </div>
                             );
                         })}
                     </>
