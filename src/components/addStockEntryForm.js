@@ -18,6 +18,8 @@ const INDICATORS_INITIAL_VALUE = {
 
 const INDICATOR_GROUP_INITIAL_VALUE = {
     groupName: "",
+    target: "",
+    stopLoss: "",
     indicators: [
         INDICATORS_INITIAL_VALUE
     ]
@@ -63,7 +65,16 @@ const AddStockEntryForm = (props) => {
                                         indicatorGroups.map((group, index) => (
                                             <div key={index}>
                                                 <h5 className="mt-3 text-center">{`Indicator Group: ${index + 1}`}</h5>
-                                                <FieldSet name={`indicatorGroups.${index}.groupName`} label="Group Name" value={indicatorGroups[index].groupName} onChange={handleChange} onBlur={handleBlur} />
+                                                <Row>
+                                                    <Col>
+                                                        <FieldSet name={`indicatorGroups.${index}.groupName`} label="Group Name" value={indicatorGroups[index].groupName} onChange={handleChange} onBlur={handleBlur} /></Col>
+                                                    <Col>
+                                                        <FieldSet name={`indicatorGroups.${index}.target`} label="Target" value={indicatorGroups[index].target} onChange={handleChange} onBlur={handleBlur} />
+                                                    </Col>
+                                                    <Col>
+                                                        <FieldSet name={`indicatorGroups.${index}.stopLoss`} label="Stop Loss" value={indicatorGroups[index].stopLoss} onChange={handleChange} onBlur={handleBlur} />
+                                                    </Col>
+                                                </Row>
 
                                                 <FieldArray
                                                     id={`indicatorGroups.${index}.indicators`}
@@ -75,7 +86,7 @@ const AddStockEntryForm = (props) => {
                                                                     <div>
                                                                         {indicatorGroups[index].indicators.map((q, indicatorIndex) => {
                                                                             return (
-                                                                                <div>
+                                                                                <div key={`${index}.${indicatorIndex}`}>
                                                                                     <h5 className="mt-3 text-center">{`Indicator ${indicatorIndex + 1}`}</h5>
                                                                                     <Row>
                                                                                         <Col>
@@ -84,7 +95,7 @@ const AddStockEntryForm = (props) => {
                                                                                                 {
                                                                                                     props.indicatorTypeOptions ? (
                                                                                                         Object.keys(props.indicatorTypeOptions).map(indicatorType => (
-                                                                                                            <option value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
+                                                                                                            <option key={indicatorType} value={indicatorType}>{props.indicatorTypeOptions[indicatorType]}</option>
                                                                                                         ))
                                                                                                     ) : null
                                                                                                 }
@@ -97,7 +108,7 @@ const AddStockEntryForm = (props) => {
                                                                                                 {
                                                                                                     props.timePeriods ? (
                                                                                                         props.timePeriods.map(timePeriod => (
-                                                                                                            <option value={timePeriod}>{timePeriod}</option>
+                                                                                                            <option key={timePeriod} value={timePeriod}>{timePeriod}</option>
                                                                                                         ))
                                                                                                     ) : null
                                                                                                 }
@@ -112,7 +123,7 @@ const AddStockEntryForm = (props) => {
                                                                                                 {
                                                                                                     props.indicatorOptions ? (
                                                                                                         props.indicatorOptions.map(indicator => (
-                                                                                                            <option value={indicator}>{indicator}</option>
+                                                                                                            <option key={indicator} value={indicator}>{indicator}</option>
                                                                                                         ))
                                                                                                     ) : null
                                                                                                 }
