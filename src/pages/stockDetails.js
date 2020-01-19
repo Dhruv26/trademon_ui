@@ -130,6 +130,7 @@ const StockDetails = ({ location, match }) => {
                             return (
                                 <div key={index}>
                                     <p>
+                                        <h5>Trade Type: {groupData.tradeType ? groupData.tradeType : "Trade type not set."}</h5>
                                         Target: {groupData.target ? groupData.target : "Target not set."}
                                         <span style={{display:"inline-block", width: 32}}></span>
                                         Stop loss: {groupData.stopLoss ? groupData.stopLoss : "Stop loss not set."}

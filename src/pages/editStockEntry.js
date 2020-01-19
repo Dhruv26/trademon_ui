@@ -11,6 +11,7 @@ const EditStockEntryPage = (props) => {
         indicators: [],
         indicatorTypeOptions: [],
         timePeriods: [],
+        tradeTypes: []
     });
     const [failedToCreateRecord, setFailedToCreateRecord] = useState(false);
     const [failureMessage, setFailureMessage] = useState("");
@@ -22,6 +23,7 @@ const EditStockEntryPage = (props) => {
                 indicators: metadata.indicators,
                 indicatorTypeOptions: metadata.indicatorTypes,
                 timePeriods: metadata.timePeriods,
+                tradeTypes: metadata.tradeTypes,
             });
         }
         setOptions();
@@ -55,6 +57,7 @@ const EditStockEntryPage = (props) => {
                 indicatorOptions={formOptions.indicators}
                 indicatorTypeOptions={formOptions.indicatorTypeOptions}
                 timePeriods={formOptions.timePeriods}
+                tradeTypes={formOptions.tradeTypes}
                 onSubmit={onSubmit}
             />
             <Button variant="warning" block className="mb-4"

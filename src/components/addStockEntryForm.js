@@ -27,6 +27,9 @@ const INDICATOR_GROUP_INITIAL_VALUE = {
 
 const INITIAL_VALUES = {
     stockName: "",
+    tradeType: "",
+    target: "",
+    stopLoss: "",
     indicatorGroups: [
         INDICATOR_GROUP_INITIAL_VALUE
     ],
@@ -67,7 +70,22 @@ const AddStockEntryForm = (props) => {
                                                 <h5 className="mt-3 text-center">{`Indicator Group: ${index + 1}`}</h5>
                                                 <Row>
                                                     <Col>
-                                                        <FieldSet name={`indicatorGroups.${index}.groupName`} label="Group Name" value={indicatorGroups[index].groupName} onChange={handleChange} onBlur={handleBlur} /></Col>
+                                                        <FieldSet name={`indicatorGroups.${index}.groupName`} label="Group Name" value={indicatorGroups[index].groupName} onChange={handleChange} onBlur={handleBlur} />
+                                                    </Col>
+                                                    <Col>
+                                                        <FieldSet name={`indicatorGroups.${index}.tradeType`} label="Trade Type" as="select" value={indicatorGroups[index].tradeType} onChange={handleChange} onBlur={handleBlur} > 
+                                                            <option value="">None</option>
+                                                            {
+                                                                props.tradeTypes ? (
+                                                                    props.tradeTypes.map(tradeType => (
+                                                                        <option key={tradeType} value={tradeType}>{tradeType}</option>
+                                                                    ))
+                                                                ) : null
+                                                            }
+                                                        </FieldSet>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
                                                     <Col>
                                                         <FieldSet name={`indicatorGroups.${index}.target`} label="Target" value={indicatorGroups[index].target} onChange={handleChange} onBlur={handleBlur} />
                                                     </Col>

@@ -11,6 +11,7 @@ const AddPage = () => {
         indicators: [],
         indicatorTypeOptions: [],
         timePeriods: [],
+        tradeTypes: []
     });
     const [failedToCreateRecord, setFailedToCreateRecord] = useState(false);
     const [failureMessage, setFailureMessage] = useState("");
@@ -22,6 +23,7 @@ const AddPage = () => {
                 indicators: metadata.indicators,
                 indicatorTypeOptions: metadata.indicatorTypes,
                 timePeriods: metadata.timePeriods,
+                tradeTypes: metadata.tradeTypes,
             });
         }
         setOptions();
@@ -56,6 +58,7 @@ const AddPage = () => {
                 indicatorOptions={formOptions.indicators}
                 indicatorTypeOptions={formOptions.indicatorTypeOptions}
                 timePeriods={formOptions.timePeriods}
+                tradeTypes={formOptions.tradeTypes}
                 onSubmit={onSubmit}
             />
             <Alert show={failedToCreateRecord} variant="danger" onClose={() => setFailedToCreateRecord(false)} dismissible>
